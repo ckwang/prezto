@@ -11,3 +11,9 @@ if [[ -s "${ZDOTDIR:-$HOME}/.zprezto/init.zsh" ]]; then
 fi
 
 # Customize to your needs...
+export GOPATH="${HOME}/go"
+export PATH="/apollo/env/SDETools/bin:$PATH:$GOPATH/bin"
+
+bindkey '^R' history-incremental-search-backward
+
+KEYTIMEOUT=1

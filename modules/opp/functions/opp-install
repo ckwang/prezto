@@ -1,0 +1,28 @@
+#!zsh
+# NOTE: Generated from opp.zsh (opp-zcompile). Please DO NOT EDIT.
+
+opp-install () {
+	{
+		zle -N opp opp
+		typeset -gA opp_operators
+		opp_operators=() 
+		BK () {
+			opp_operators+=("$1" $2) 
+			bindkey -M vicmd "$1" opp
+			{
+				bindkey -M afu-vicmd "$1" opp
+			} > /dev/null 2>&1
+		}
+		BK "c" opp-vi-change
+		BK "d" opp-vi-delete
+		BK "y" opp-vi-yank
+		BK "~" opp-vi-tilde
+		BK "gU" opp-vi-uppercase
+		BK "gu" opp-vi-lowercase
+		{
+			"$@"
+		}
+	} always {
+		unfunction BK
+	}
+}

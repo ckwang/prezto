@@ -1,0 +1,1170 @@
+#!zsh
+# NOTE: Generated from opp.zsh (opp-zcompile). Please DO NOT EDIT.
+
+opp-gps-tb-a () {
+	local k
+	local s=
+	opp-gps-tb-s-ref s
+	opp-inbetween-scan "$s" k
+	(($?==0)) && CURSOR=$k 
+}
+opp-gps-tb-b () {
+	local k
+	local s=
+	opp-gps-tb-s-ref s
+	opp-generic-pair-scan "$(($CURSOR+1))" $s $s $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-recursive-edit () {
+	with-opp opp-recursive-edit-1 "$@"
+}
+'opp+a"' () {
+	opp-generic -1 opp-gps-inbetween-0-a +1 opp-gps-inbetween-0-b "$@"
+}
+'opp+a'\' () {
+	opp-generic -1 opp-gps-inbetween-1-a +1 opp-gps-inbetween-1-b "$@"
+}
+'opp+a(' () {
+	opp-generic -1 opp-gps-\( +1 opp-gps-\) "$@"
+}
+with-opp-tb-read () {
+	local OPP_TB_READ_CHAR=
+	local c
+	read -s -k 1 c
+	[[ "$c" = [[:print:]] ]] || return
+	OPP_TB_READ_CHAR="$c" 
+	"$@"
+}
+'opp+a)' () {
+	opp-generic -1 opp-gps-\( +1 opp-gps-\) "$@"
+}
+opp-skip-alpunum-backward () {
+	while [[ ${BUFFER[((CURSOR-0))]-} = [[:alnum:][:punct:]] ]]
+	do
+		((CURSOR--))
+	done
+}
+'opp+a<' () {
+	opp-generic -1 opp-gps-\< +1 opp-gps-\> "$@"
+}
+'opp+a>' () {
+	opp-generic -1 opp-gps-\< +1 opp-gps-\> "$@"
+}
+opp-vi-yank () {
+	zle opp-recursive-edit -- opp-copy-region vi-yank opp-id nil
+}
+opp+aB () {
+	opp-generic -1 opp-gps-\{ +1 opp-gps-\} "$@"
+}
+opp+aW () {
+	if [[ $BUFFER[((CURSOR+1))] = [[:space:]] ]]
+	then
+		opp-generic-w -1 opp-skip-blank-backward -2 opp-skip-blank-forward -2 opp-skip-alpunum-forward "$@"
+	else
+		opp-generic-w -1 opp-skip-alpunum-backward -2 opp-skip-alpunum-forward -2 opp-skip-blank-forward "$@"
+	fi
+}
+'opp+a[' () {
+	opp-generic -1 opp-gps-\[ +1 opp-gps-\] "$@"
+}
+'opp+a]' () {
+	opp-generic -1 opp-gps-\[ +1 opp-gps-\] "$@"
+}
+'opp+a`' () {
+	opp-generic -1 opp-gps-inbetween-2-a +1 opp-gps-inbetween-2-b "$@"
+}
+opp+ab () {
+	opp-generic -1 opp-gps-\( +1 opp-gps-\) "$@"
+}
+opp+af () {
+	with-opp-tb-read opp-generic -1 opp-gps-tb-a +1 opp-gps-tb-b "$@"
+}
+opp+ak () {
+	opp-generic -1 opp-gps-\[ +1 opp-gps-\] "$@"
+}
+opp+aw () {
+	if [[ $BUFFER[((CURSOR+1))] = [[:blank:]] ]]
+	then
+		opp-generic-w -1 opp-skip-blank-backward -2 opp-skip-aw-forward-on-blank "$@"
+	elif [[ $BUFFER[((CURSOR+1))] = [[:punct:]]~[_] ]]
+	then
+		opp-generic-w -1 opp-skip-punct-backward -1 opp-skip-blank-backward -2 opp-skip-blank-forward -2 opp-skip-punct-forward "$@"
+	else
+		opp-generic-w -1 opp-skip-alnum-backward -2 opp-skip-alnum-forward -2 opp-skip-blank-forward "$@"
+	fi
+}
+'opp+a{' () {
+	opp-generic -1 opp-gps-\{ +1 opp-gps-\} "$@"
+}
+opp-read-motion-p () {
+	local c="${1}"
+	local acc="${2}"
+	local -a match mbegin mend
+	local -i len=${#acc/*[[:digit:]](#b)(*)/$match}
+	((len==1)) || return 1
+	[[ $c = 't' ]] && return 0
+	[[ $c = 'T' ]] && return 0
+	[[ $c = 'f' ]] && return 0
+	[[ $c = 'F' ]] && return 0
+	[[ $c = "'" ]] && return 0
+	[[ $c = 'g' ]] && return 0
+	[[ $c = '[' ]] && return 0
+	[[ $c = ']' ]] && return 0
+	return 1
+}
+'opp+a}' () {
+	opp-generic -1 opp-gps-\{ +1 opp-gps-\} "$@"
+}
+opp-skip-aw-forward-on-blank () {
+	zle opp-skip-blank-forward
+	if [[ $BUFFER[((CURSOR+1))] = [[:punct:]]~[_] ]]
+	then
+		opp-skip-punct-forward
+	else
+		opp-skip-alnum-forward
+	fi
+}
+opp-install-after-load () {
+	typeset -g opp_keybuffer
+	bindkey -N opp
+	{
+		typeset -gA opps
+		opps=('a"' 'opp+a"' 'a'\' 'opp+a'\' 'a(' 'opp+a(' 'a)' 'opp+a)' 'a<' 'opp+a<' 'a>' 'opp+a>' aB opp+aB aW opp+aW 'a[' 'opp+a[' 'a]' 'opp+a]' 'a`' 'opp+a`' ab opp+ab af opp+af ak opp+ak aw opp+aw 'a{' 'opp+a{' 'a}' 'opp+a}' 'i"' 'opp+i"' 'i'\' 'opp+i'\' 'i(' 'opp+i(' 'i)' 'opp+i)' 'i<' 'opp+i<' 'i>' 'opp+i>' iB opp+iB iW opp+iW 'i[' 'opp+i[' 'i]' 'opp+i]' 'i`' 'opp+i`' ib opp+ib if opp+if ik opp+ik iw opp+iw 'i{' 'opp+i{' 'i}' 'opp+i}' s opp+surround) 
+		typeset -g opp_surround_op=
+		typeset -gA opp_sopps
+		opp_sopps=(c opp-surround+c d opp-surround+d linewise opp-surround+linewise y opp-surround+y) 
+		typeset -gA opp_surrounds
+		opp_surrounds=('"' 'opp+surround"' \' 'opp+surround'\' '(' 'opp+surround(' ')' 'opp+surround)' '<' 'opp+surround<' '>' 'opp+surround>' B opp+surroundB '[' 'opp+surround[' ']' 'opp+surround]' '`' 'opp+surround`' b opp+surroundb k opp+surroundk '{' 'opp+surround{' '}' 'opp+surround}') 
+	}
+	{
+		zle -N "opp"
+		zle -N "opp-copy-region"
+		zle -N "opp-gps-("
+		zle -N "opp-gps-)"
+		zle -N "opp-gps-<"
+		zle -N "opp-gps->"
+		zle -N "opp-gps-["
+		zle -N "opp-gps-]"
+		zle -N "opp-gps-inbetween-0-a"
+		zle -N "opp-gps-inbetween-0-b"
+		zle -N "opp-gps-inbetween-1-a"
+		zle -N "opp-gps-inbetween-1-b"
+		zle -N "opp-gps-inbetween-2-a"
+		zle -N "opp-gps-inbetween-2-b"
+		zle -N "opp-gps-tb-a"
+		zle -N "opp-gps-tb-b"
+		zle -N "opp-gps-{"
+		zle -N "opp-gps-}"
+		zle -N "opp-id"
+		zle -N "opp-lower-case-region"
+		zle -N "opp-recursive-edit"
+		zle -N "opp-s-read+y"
+		zle -N "opp-skip-alnum-backward"
+		zle -N "opp-skip-alnum-forward"
+		zle -N "opp-skip-alpunum-backward"
+		zle -N "opp-skip-alpunum-forward"
+		zle -N "opp-skip-blank-backward"
+		zle -N "opp-skip-blank-forward"
+		zle -N "opp-skip-punct-backward"
+		zle -N "opp-skip-punct-forward"
+		zle -N "opp-swap-case-region"
+		zle -N "opp-upper-case-region"
+		zle -N "opp-vi-change"
+		zle -N "opp-vi-delete"
+		zle -N "opp-vi-lowercase"
+		zle -N "opp-vi-tilde"
+		zle -N "opp-vi-uppercase"
+		zle -N "opp-vi-yank"
+		bindkey -M opp "a\"" .accept-line
+		bindkey -M opp "a'" .accept-line
+		bindkey -M opp "a(" .accept-line
+		bindkey -M opp "a)" .accept-line
+		bindkey -M opp "a<" .accept-line
+		bindkey -M opp "a>" .accept-line
+		bindkey -M opp "aB" .accept-line
+		bindkey -M opp "aW" .accept-line
+		bindkey -M opp "a[" .accept-line
+		bindkey -M opp "a]" .accept-line
+		bindkey -M opp "a\`" .accept-line
+		bindkey -M opp "ab" .accept-line
+		bindkey -M opp "af" .accept-line
+		bindkey -M opp "ak" .accept-line
+		bindkey -M opp "aw" .accept-line
+		bindkey -M opp "a{" .accept-line
+		bindkey -M opp "a}" .accept-line
+		bindkey -M opp "i\"" .accept-line
+		bindkey -M opp "i'" .accept-line
+		bindkey -M opp "i(" .accept-line
+		bindkey -M opp "i)" .accept-line
+		bindkey -M opp "i<" .accept-line
+		bindkey -M opp "i>" .accept-line
+		bindkey -M opp "iB" .accept-line
+		bindkey -M opp "iW" .accept-line
+		bindkey -M opp "i[" .accept-line
+		bindkey -M opp "i]" .accept-line
+		bindkey -M opp "i\`" .accept-line
+		bindkey -M opp "ib" .accept-line
+		bindkey -M opp "if" .accept-line
+		bindkey -M opp "ik" .accept-line
+		bindkey -M opp "iw" .accept-line
+		bindkey -M opp "i{" .accept-line
+		bindkey -M opp "i}" .accept-line
+		bindkey -M opp "s" .accept-line
+	}
+	opp_loaded_p=t 
+}
+opp-gps-inbetween-1-a () {
+	local k
+	local s=
+	opp-gps-inbetween-1-s-ref s
+	opp-inbetween-scan "$s" k
+	(($?==0)) && CURSOR=$k 
+}
+opp-gps-inbetween-1-b () {
+	local k
+	local s=
+	opp-gps-inbetween-1-s-ref s
+	opp-generic-pair-scan "$(($CURSOR+1))" $s $s $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-copy-region () {
+	with-opp-regioned zle copy-region-as-kill
+}
+git-stash-dropped () {
+	# undefined
+	builtin autoload -XUz
+}
+opp-skip-alnum-forward () {
+	while [[ ${BUFFER[((CURSOR+1))]-} = [[:alnum:]_] ]]
+	do
+		((CURSOR++))
+	done
+}
+opp1 () {
+	$opp_operators[$KEYS]
+}
+opp-skip-alpunum-forward () {
+	while [[ ${BUFFER[((CURSOR+1))]-} = [[:alnum:][:punct:]] ]]
+	do
+		((CURSOR++))
+	done
+}
+opp-generic-pair-scan () {
+	local -i pos="${1}"
+	local a="${2}"
+	local b="${3}"
+	local buf="${4}"
+	local suc="${5}"
+	local -i nest="${6}"
+	local place="${7}"
+	((pos==0)) && return -1
+	((pos==(($#buf+1)))) && return -1
+	opp-generic-pair-scan-1 () {
+		local newnest="$1"
+		opp-generic-pair-scan $((pos $suc)) $a $b "$buf" "$suc" $newnest $place
+		return $?
+	}
+	[[ ${buf[$pos, $((pos+$#a-1))]-} = $a ]] && {
+		((nest==0)) && {
+			: ${(P)place::=$pos}
+			return 0
+		} || opp-generic-pair-scan-1 $((nest-1))
+		return $?
+	} || [[ ${buf[$pos, $((pos+$#b-1))]-} = $b ]] && {
+		opp-generic-pair-scan-1 $((nest+1))
+		return $?
+	}
+	opp-generic-pair-scan-1 $nest
+	return $?
+}
+'opp+i"' () {
+	opp-generic -0 opp-gps-inbetween-0-a -0 opp-gps-inbetween-0-b "$@"
+}
+opp-surround+c-1 () {
+	shift
+	local k="$1"
+	local s1="$2"
+	local s2="$3"
+	local sp="$4"
+	shift 4
+	[[ -n "$opp_surrounds[$k]" ]] && {
+		local -a box
+		opp-s-ref "$opp_surrounds[$k]" box
+		local _proc="$box[1]"
+		local arg1="$box[2]"
+		local arg2="$box[3]"
+		local _stripp="$box[4]"
+		shift 4 box
+		opp-s-wrap-maybe $sp $arg1 $arg2 $s1 $s2 "$@"
+	} || {
+		opp-s-wrap-maybe $sp $k $k $s1 $s2 "$@"
+	}
+}
+'opp+i'\' () {
+	opp-generic -0 opp-gps-inbetween-1-a -0 opp-gps-inbetween-1-b "$@"
+}
+'opp+i(' () {
+	opp-generic -0 opp-gps-\( -0 opp-gps-\) "$@"
+}
+'opp+i)' () {
+	opp-generic -0 opp-gps-\( -0 opp-gps-\) "$@"
+}
+opp-vi-lowercase () {
+	zle opp-recursive-edit -- opp-lower-case-region opp-lower-case-region opp-id t
+}
+'opp+i<' () {
+	opp-generic -0 opp-gps-\< -0 opp-gps-\> "$@"
+}
+'opp+i>' () {
+	opp-generic -0 opp-gps-\< -0 opp-gps-\> "$@"
+}
+opp+iB () {
+	opp-generic -0 opp-gps-\{ -0 opp-gps-\} "$@"
+}
+opp+iW () {
+	if [[ $BUFFER[((CURSOR+1))] = [[:blank:]] ]]
+	then
+		opp-generic-w -1 opp-skip-blank-backward -2 opp-skip-blank-forward "$@"
+	else
+		opp-generic-w -1 opp-skip-alpunum-backward -2 opp-skip-alpunum-forward "$@"
+	fi
+}
+'opp+i[' () {
+	opp-generic -0 opp-gps-\[ -0 opp-gps-\] "$@"
+}
+'opp+i]' () {
+	opp-generic -0 opp-gps-\[ -0 opp-gps-\] "$@"
+}
+'opp+i`' () {
+	opp-generic -0 opp-gps-inbetween-2-a -0 opp-gps-inbetween-2-b "$@"
+}
+opp+ib () {
+	opp-generic -0 opp-gps-\( -0 opp-gps-\) "$@"
+}
+opp+if () {
+	with-opp-tb-read opp-generic -0 opp-gps-tb-a -0 opp-gps-tb-b "$@"
+}
+opp-oneshot-region () {
+	local fn="$1"
+	local c0="$2"
+	local c1=$CURSOR
+	local c2="$2"
+	(($c0 < $c1)) || {
+		local tmp=$c0
+		c0=$c1 
+		c1=$tmp 
+	}
+	CURSOR=$c0 
+	zle set-mark-command
+	CURSOR=$c1 
+	zle $fn
+	CURSOR=$c2 
+}
+opp+ik () {
+	opp-generic -0 opp-gps-\[ -0 opp-gps-\] "$@"
+}
+opp+iw () {
+	if [[ $BUFFER[((CURSOR+1))] = [[:blank:]] ]]
+	then
+		opp-generic-w -1 opp-skip-blank-backward -2 opp-skip-blank-forward -- "$@"
+	elif [[ $BUFFER[((CURSOR+1))] = [[:punct:]]~[_] ]]
+	then
+		opp-generic-w -1 opp-skip-punct-backward -2 opp-skip-punct-forward -- "$@"
+	else
+		opp-generic-w -1 opp-skip-alnum-backward -2 opp-skip-alnum-forward -- "$@"
+	fi
+}
+'opp+i{' () {
+	opp-generic -0 opp-gps-\{ -0 opp-gps-\} "$@"
+}
+'opp+i}' () {
+	opp-generic -0 opp-gps-\{ -0 opp-gps-\} "$@"
+}
+opp-skip-alnum-backward () {
+	while [[ ${BUFFER[((CURSOR-0))]-} = [[:alnum:]_] ]]
+	do
+		((CURSOR--))
+	done
+}
+opp-s-read-fail () {
+	local o="$1"
+	local e="$2"
+	local -a ks
+	{
+		eval "ks=($e)"
+	}
+	local c="$3"
+	local p="$4"
+	local a="$5"
+	local f="$6"
+	local succ="$7"
+	local fail="$8"
+	local mess="$9"
+	local sk="$10"
+	local fk="$11"
+	shift 11
+	opp-surround-tagish () {
+		local o="$1"
+		local tagish="$2"
+		[[ $tagish = '<'* ]] || return -1
+		local tag1="$tagish"
+		local tag2="</$tag1[2,-1]"
+		shift 2
+		[[ -z ${1-} ]] && [[ -z ${2-} ]] && {
+			"$opp_sopps[$o]" "$tag1" "$tag2"
+			return $?
+		} || {
+			opp-s-wrap-maybe nil $tag1 $tag2 $1 $2
+		}
+	}
+	opp-s-read-acc-tagish () {
+		opp-s-read-acc-base "$@"
+		{
+			local -i ret=$?
+			((ret==255)) || return $((ret))
+		}
+		local c="$1"
+		local aplace="$2"
+		local avalue="$3"
+		: ${(P)aplace::=$avalue$c}
+		[[ -n ${avalue-} ]] && [[ $avalue[1] = '<' ]] && [[ $c = '>' ]] && {
+			return 0
+		}
+		return -1
+	}
+	[[ $o = 'c' ]] && (($#@!=0)) && [[ -n $c ]] && [[ $c != '<' ]] && [[ $a[1] != '<' ]] && [[ $c != '>' ]] && {
+		opp-s-wrap-maybe nil $c $c "$@"
+		return $?
+	}
+	"$mess" "$0" "$o" "$a" "$@"
+	read -s -k 1 c
+	opp-s-loop $o $e "$c" opp-s-read-acc-tagish "$a" 1 opp-surround-tagish $fail $mess $sk $fk "$@"
+}
+opp-s-read () {
+	local op="$1"
+	shift
+	local succ="$1"
+	shift
+	[[ $op = 'y' ]] && [[ $KEYS = 's' ]] && {
+		opp-s-read+linewise
+		return $?
+	} || {
+		opp-s-read-1 "$op" "$succ" opp-s-reading "$@"
+	}
+}
+opp-surround+linewise () {
+	zle vi-goto-column -n 0
+	[[ ${BUFFER[((CURSOR+1))]-} = [[:blank:]] ]] && opp-skip-blank-forward
+	RBUFFER="${1}$RBUFFER" 
+	zle vi-goto-column -n 0
+	zle end-of-line
+	[[ ${BUFFER[((CURSOR+0))]-} = [[:blank:]] ]] && opp-skip-blank-backward
+	LBUFFER="$LBUFFER${2}" 
+}
+opp-vi-uppercase () {
+	zle opp-recursive-edit -- opp-upper-case-region opp-upper-case-region opp-id t
+}
+opp-motion () {
+	local _op="${1}"
+	local arg="${2}"
+	local _appk="${3}"
+	local _succ="${4}"
+	local fail="${5}"
+	local mopp="${6}"
+	if [[ ${mopp} = t ]]
+	then
+		OPP_ONESHOT_KEY="[999~" 
+		eval "
+      opp+oneshot+ () {
+        bindkey -M $KEYMAP -r '$OPP_ONESHOT_KEY'
+        opp-oneshot-region $fail \"$CURSOR\"
+      }; zle -N opp+oneshot+"
+		bindkey -M $KEYMAP "$OPP_ONESHOT_KEY" opp+oneshot+
+		zle -U "${arg}$OPP_ONESHOT_KEY"
+	else
+		zle -U "$arg"
+		zle $fail
+	fi
+}
+opp-s-loop () {
+	local o="$1"
+	local e="$2"
+	local -a ks
+	{
+		eval "ks=($e)"
+	}
+	local c="$3"
+	local p="$4"
+	local a="$5"
+	"$p" "$c" a "$a" "$e"
+	local -i r=$?
+	local f="$6"
+	local succ="$7"
+	local fail="$8"
+	local mess="$9"
+	local sk="$10"
+	local fk="$11"
+	shift 11
+	((r==-255)) && {
+		return -1
+	}
+	((r==   1)) && {
+		f=0 
+		succ=$sk 
+		fail=$fk 
+	}
+	"$mess" "$0" "$o" "$a" "$@"
+	opp-s-loop-1 () {
+		local fn="$1"
+		shift
+		"$fn" $o $e "$c" $p "$a" $f $succ $fail $mess $sk $fk "$@"
+	}
+	local -i n0
+	((n0=${#${(@M)ks:#${a}}} ))
+	local -i n1
+	((n1=${#${(@M)ks:#${a}*}}))
+	((n0==1)) && ((r ==0)) && {
+		"$succ" "$o" "$a" "$@"
+		return $?
+	} || ((n0==1)) && ((n1==1)) && {
+		"$succ" "$o" "$a" "$@"
+		return $?
+	} || ((n1==0)) && ((r ==0)) && ((f ==1)) && {
+		"$succ" "$o" "$a" "$@"
+		return $?
+	} || ((n1==0)) && {
+		opp-s-loop-1 "$fail" "$@"
+		return $?
+	} || {
+		read -s -k 1 c
+		opp-s-loop-1 opp-s-loop "$@"
+		return $?
+	}
+}
+opp-skip-punct-backward () {
+	while [[ ${BUFFER[((CURSOR-0))]-} = [[:punct:]]~[_] ]]
+	do
+		((CURSOR--))
+	done
+}
+opp-k () {
+	CURSOR="$2" 
+	zle set-mark-command
+	CURSOR="$3" 
+	zle "$1"
+}
+opp-s-reading () {
+	[[ -n ${OPP_SURROUND_VERBOSE-} ]] || return
+	local f0="$1"
+	local op="$2"
+	local a="$3"
+	shift 3
+	local b=
+	b+="${op[1]}s" 
+	(($#@!=0)) && {
+		b+="{$@[1]|$@[2]}" 
+	}
+	b+="$a" 
+	zle -R "$b"
+}
+opp-generic () {
+	local fix1="$1"
+	shift
+	local fun1="$1"
+	shift
+	local fix2="$1"
+	shift
+	local fun2="$1"
+	shift
+	local beg end
+	[[ $fun1 != none ]] && zle $fun1
+	((beg=$CURSOR $fix1))
+	[[ $fun2 != none ]] && zle $fun2
+	((end=$CURSOR $fix2))
+	"$@" $beg $end
+}
+opp-swap-case-region-0 () {
+	local -i i=$1
+	local c="$2"
+	case "$c" in
+		([[:lower:]]) BUFFER[$i]="${(U)c}"  ;;
+		([[:upper:]]) BUFFER[$i]="${(L)c}"  ;;
+	esac
+}
+'opp+surround"' () {
+	reply=(opp-surround-sopp \" \" nil) 
+}
+'opp+surround'\' () {
+	reply=(opp-surround-sopp \' \' nil) 
+}
+'opp+surround(' () {
+	reply=(opp-surround-sopp \(\  \ \) t) 
+	reply+=\( 
+	reply+=\) 
+}
+'opp+surround)' () {
+	reply=(opp-surround-sopp \( \) nil) 
+}
+'opp+surround<' () {
+	reply=(opp-surround-sopp \<\  \ \> t) 
+	reply+=\< 
+	reply+=\> 
+}
+_floppy () {
+	# undefined
+	builtin autoload -XUz
+}
+'opp+surround>' () {
+	reply=(opp-surround-sopp \< \> nil) 
+}
+opp+surroundB () {
+	reply=(opp-surround-sopp \{ \} nil) 
+}
+'opp+surround[' () {
+	reply=(opp-surround-sopp \[\  \ \] t) 
+	reply+=\[ 
+	reply+=\] 
+}
+'opp+surround]' () {
+	reply=(opp-surround-sopp \[ \] nil) 
+}
+'opp+surround`' () {
+	reply=(opp-surround-sopp \` \` nil) 
+}
+opp+surroundb () {
+	reply=(opp-surround-sopp \( \) nil) 
+}
+opp+surroundk () {
+	reply=(opp-surround-sopp \[ \] nil) 
+}
+'opp+surround{' () {
+	reply=(opp-surround-sopp \{\  \ \} t) 
+	reply+=\{ 
+	reply+=\} 
+}
+'opp+surround}' () {
+	reply=(opp-surround-sopp \{ \} nil) 
+}
+opp-recursive-edit-1 () {
+	local oppk="${1}"
+	local fail="${2}"
+	local succ="${3}"
+	local op="${4}"
+	local mopp="${5}"
+	local numeric=$NUMERIC
+	zle recursive-edit -K opp && {
+		${opps[$KEYS]} opp-k $oppk
+		zle $succ
+	} || {
+		[[ -z "${numeric-}" ]] || {
+			local NUMERIC=$numeric
+		}
+		local arg=$opp_keybuffer[(($#op+1)),-1]
+		[[ -n $arg ]] && {
+			opp-read-motion "$op" "$arg[-1]" "$arg" opp-linewise~ opp-motion "$oppk" "$succ" "$fail" "$mopp"
+		}
+	}
+}
+opp-id () {
+	"$@"
+}
+opp-lower-case-region () {
+	opp-regioned-buffer-each~ opp-lower-case-region-0
+}
+opp-vi-tilde () {
+	zle opp-recursive-edit -- opp-swap-case-region opp-swap-case-region opp-id t
+}
+'opp-linewise~' () {
+	local _op="${1}"
+	local _arg="${2}"
+	local appk="${3}"
+	local succ="${4}"
+	opp-linewise $oppk
+	zle $succ
+}
+opp-surround+c () {
+	opp-s-read "c" opp-surround+c-1 "$@"
+}
+opp-surround+d () {
+	local a1="$1"
+	shift
+	local a2="$1"
+	shift
+	local sp="$1"
+	shift
+	opp-s-wrap-maybe "$sp" '' '' "$a1" "$a2" "$@"
+}
+opp-skip-blank-backward () {
+	while [[ ${BUFFER[((CURSOR-0))]-} = [[:blank:]] ]]
+	do
+		((CURSOR--))
+	done
+}
+opp-surround+y () {
+	RBUFFER="${2}${RBUFFER}" 
+	zle exchange-point-and-mark
+	LBUFFER="${LBUFFER}${1}" 
+	zle set-mark-command -n -1
+}
+opp-gps-inbetween-0-a () {
+	local k
+	local s=
+	opp-gps-inbetween-0-s-ref s
+	opp-inbetween-scan "$s" k
+	(($?==0)) && CURSOR=$k 
+}
+opp-gps-inbetween-0-b () {
+	local k
+	local s=
+	opp-gps-inbetween-0-s-ref s
+	opp-generic-pair-scan "$(($CURSOR+1))" $s $s $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-regioned-buffer-each () {
+	local i
+	for i in {$((MARK+1))..$((CURSOR))}
+	do
+		local c=$BUFFER[$i]
+		"$@" $i "$c"
+	done
+}
+opp-install-maybe () {
+	[[ -z ${opp_loaded_p-} ]] || return
+	opp-install-after-load
+}
+with-opp-regioned () {
+	((REGION_ACTIVE)) || return
+	{
+		"$@"
+	} always {
+		zle set-mark-command -n -1
+	}
+}
+opp-s-read-1 () {
+	local op="$1"
+	shift
+	local succ="$1"
+	shift
+	local mess="$1"
+	shift
+	opp-s-read-acc () {
+		opp-s-read-acc-base "$@"
+		{
+			local -i ret=$?
+			((ret==255)) || return $((ret))
+		}
+		local c="$1"
+		local aplace="$2"
+		local avalue="$3"
+		[[ $op = 'c' ]] && {
+			local e="$4"
+			local -a ks
+			{
+				eval "ks=($e)"
+			}
+			local -i n0
+			((n0=${#${(@M)ks:#$avalue${c}*}}))
+			local -i n1
+			((n1=${#${(@M)ks:#${c}*}}))
+			((n0==0)) && ((n1!=0)) && {
+				zle -U "$c"
+				return 0
+			}
+		}
+		: ${(P)aplace::=$avalue$c}
+		return -1
+	}
+	opp-s-read-2 "$op" opp-s-read-acc "$succ" opp-s-read-fail "$mess" "$@"
+}
+opp-s-read-2 () {
+	local op="$1"
+	shift
+	local pacc="$1"
+	shift
+	local succ="$1"
+	shift
+	local fail="$1"
+	shift
+	local mess="$1"
+	shift
+	"$mess" "$0" "$op" '' "$@"
+	local c
+	read -s -k 1 c
+	{
+		[[ $op = 'd' ]] && [[ $c = 's' ]] && return -1
+		[[ $op = 'c' ]] && [[ $c = 's' ]] && {
+			opp-s-read+linewise
+			return $?
+		}
+	}
+	opp-s-loop "$op" '${(@k)opp_surrounds}' "$c" "$pacc" '' 0 "$succ" "$fail" "$mess" "$succ" "$fail" "$@"
+}
+opp-s-read+y () {
+	opp-s-reading "$0" "y" ''
+	opp-s-read $opp_surround_op opp-surround
+}
+opp-lower-case-region-0 () {
+	BUFFER[$1]="${(L)2}" 
+}
+opp-vi-delete () {
+	zle opp-recursive-edit -- kill-region vi-delete opp-id nil
+}
+opp () {
+	opp-install-maybe
+	opp1
+}
+with-opp () {
+	{
+		emulate -L zsh
+		setopt extended_glob
+		zle -N undefined-key opp-undefined-key
+		opp_keybuffer=$KEYS 
+		"$@[1,-2]" "$opp_keybuffer" "$5"
+	} always {
+		zle -N undefined-key opp-id
+	}
+}
+opp-vi-change () {
+	zle opp-recursive-edit -- kill-region vi-change vi-insert nil
+}
+opp-gps-inbetween-0-s-ref () {
+	: ${(P)1:=\"}
+}
+opp-upper-case-region () {
+	opp-regioned-buffer-each~ opp-upper-case-region-0
+}
+opp-skip-punct-forward () {
+	while [[ ${BUFFER[((CURSOR+1))]-} = [[:punct:]]~[_] ]]
+	do
+		((CURSOR++))
+	done
+}
+opp-undefined-key () {
+	opp_keybuffer+=$KEYS 
+	opp-accept-p
+	local ret=$?
+	((ret == 0)) && zle .accept-line
+	((ret == 1)) && zle .send-break
+}
+opp-gps-inbetween-2-a () {
+	local k
+	local s=
+	opp-gps-inbetween-2-s-ref s
+	opp-inbetween-scan "$s" k
+	(($?==0)) && CURSOR=$k 
+}
+opp-gps-inbetween-2-b () {
+	local k
+	local s=
+	opp-gps-inbetween-2-s-ref s
+	opp-generic-pair-scan "$(($CURSOR+1))" $s $s $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-gps-tb-s-ref () {
+	: ${(P)1:=$OPP_TB_READ_CHAR}
+}
+'opp-gps-(' () {
+	local k
+	opp-pair-scan $CURSOR \( \) $BUFFER -1 0 k
+	(($?==0)) && CURSOR=$k 
+}
+'opp-gps-)' () {
+	local k
+	opp-generic-pair-scan "$(($CURSOR+1))" \) \( $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-s-read+linewise () {
+	opp-s-read "linewise" opp-surround
+}
+opp-s-wrap-scan () {
+	local -i pos="${1}"
+	local a="${2}"
+	local b="${3}"
+	local buf="${4}"
+	local suc="${5}"
+	local -i nest="${6}"
+	local place="${7}"
+	((pos==0)) && return -1
+	((pos==(($#buf+1)))) && return -1
+	[[ $a != $b ]] && {
+		opp-generic-pair-scan "$@"
+		return $?
+	} || [[ $suc = +1 ]] && {
+		: ${(P)place::=${(BS)buf#${a}*}}
+		return 0
+	} || [[ $suc = -1 ]] && {
+		: ${(P)place::=${(BS)buf%${a}*}}
+		return 0
+	}
+}
+'opp-gps-<' () {
+	local k
+	opp-pair-scan $CURSOR \< \> $BUFFER -1 0 k
+	(($?==0)) && CURSOR=$k 
+}
+'opp-gps->' () {
+	local k
+	opp-generic-pair-scan "$(($CURSOR+1))" \> \< $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-linewise () {
+	zle vi-goto-column -n 0
+	zle set-mark-command
+	zle end-of-line
+	zle "$1"
+}
+opp-gps-inbetween-1-s-ref () {
+	: ${(P)1:=\'}
+}
+opp-upper-case-region-0 () {
+	BUFFER[$1]="${(U)2}" 
+}
+opp-accept-p () {
+	[[ -n ${opps[$KEYS]-} ]] && return 0
+	[[ $KEYS != *[1-9] ]] && return 1
+	return -1
+}
+'opp-gps-[' () {
+	local k
+	opp-pair-scan $CURSOR \[ \] $BUFFER -1 0 k
+	(($?==0)) && CURSOR=$k 
+}
+'opp-gps-]' () {
+	local k
+	opp-generic-pair-scan "$(($CURSOR+1))" \] \[ $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+'opp-gps-{' () {
+	local k
+	opp-pair-scan $CURSOR \{ \} $BUFFER -1 0 k
+	(($?==0)) && CURSOR=$k 
+}
+'opp-gps-}' () {
+	local k
+	opp-generic-pair-scan "$(($CURSOR+1))" \} \{ $BUFFER +1 0 k
+	(($?==0)) && ((CURSOR=$k - 1))
+}
+opp-pair-scan () {
+	shift
+	local -i ret=0
+	local a
+	a="$1" 
+	[[ "${BUFFER[((CURSOR+1))]-}" = "$a" ]] && {
+		opp-generic-pair-scan $((CURSOR+1)) "$@"
+		return $?
+	}
+	opp-generic-pair-scan $CURSOR "$@"
+	return $?
+}
+opp-read-motion () {
+	local op="${1}"
+	shift
+	local cc="${1}"
+	shift
+	local acc="${1}"
+	shift
+	local succ="${1}"
+	shift
+	local fail="${1}"
+	shift
+	[[ $op = $acc ]] && {
+		"$succ" "$op" "$acc" "$@"
+		return $?
+	} || {
+		opp-read-motion-p "$cc" "$acc"
+	} && {
+		local c
+		read -s -k 1 c
+		opp-read-motion "$op" "$c" "$acc$c" "$succ" "$fail" "$@"
+		return $?
+	} || [[ $op != "$acc"* ]] && {
+		"$fail" "$op" "$acc" "$@"
+		return $?
+	} || [[ $cc = '' ]] && {
+		"$fail" "$op" "$acc" "$@"
+		return $?
+	} || [[ $op = "$acc"* ]] && {
+		local c
+		read -s -k 1 c
+		opp-read-motion "$op" "$c" "$acc$c" "$succ" "$fail" "$@"
+		return $?
+	}
+}
+opp-s-read-acc-base () {
+	local c="$1"
+	local aplace="$2"
+	local avalue="$3"
+	[[ $c = "" ]] && return -255
+	[[ $c = "" ]] && return 0
+	[[ $c = "" ]] && {
+		: ${(P)aplace::=$avalue[1,-2]}
+		return 1
+	}
+	[[ $c != [[:print:]] ]] && return 0
+	[[ -z $avalue ]] && {
+		: ${(P)aplace::=$avalue$c}
+		return -1
+	}
+	return 255
+}
+opp+surround () {
+	local op="$opp_keybuffer"
+	{
+		opp_surround_op=${opp_surround_op:-$op} 
+		[[ $op = 'y' ]] && {
+			zle opp-recursive-edit opp-s-read+y opp-id opp-id nil
+			return $?
+		} || [[ -n $opp_surround_op ]] && {
+			opp-s-read $opp_surround_op opp-surround
+			return $?
+		}
+	} always {
+		opp_surround_op= 
+		zle set-mark-command -n -1
+		zle -R
+		succ=vi-cmd-mode 
+	}
+}
+opp-surround-sopp () {
+	local o="$1"
+	shift
+	"$opp_sopps[$o]" "$@"
+}
+opp-inbetween-scan () {
+	local -i ret=0
+	local a="$1"
+	shift
+	local kplace="$1"
+	shift
+	local buf="$BUFFER"
+	if [[ "${buf[((CURSOR+1))]-}" = "$a" ]]
+	then
+		() {
+			local -i i=0 nest=0
+			local c=
+			for ((i=1; i<CURSOR; i++)) do
+				((i+1==CURSOR)) && break
+				[[ "${buf[$i,$((i+$#a-1))]-}" = "$a" ]] && {
+					((nest++))
+					continue
+				}
+			done
+			((nest & 1))
+		}
+		((?==1)) && {
+			opp-generic-pair-scan $CURSOR "$a" "$a" "$buf" +1 0 "$kplace"
+			((ret=?))
+			((ret==0)) && {
+				: ${(P)kplace:=$CURSOR}
+				return ret
+			}
+		}
+	fi
+	opp-generic-pair-scan $CURSOR "$a" "$a" "$buf" -1 0 "$kplace"
+	((ret=?))
+	((ret==0)) || {
+		[[ "${buf[((CURSOR+1))]-}" = "$a" ]] && {
+			((CURSOR++))
+			opp-generic-pair-scan $CURSOR "$a" "$a" "$buf" +1 0 "$kplace"
+			((ret=?))
+		}
+	}
+	return ret
+}
+opp-swap-case-region () {
+	opp-regioned-buffer-each~ opp-swap-case-region-0
+}
+opp-s-wrap-maybe () {
+	local sp="$1"
+	local t1="$2"
+	local t2="$3"
+	local s1="$4"
+	local s2="$5"
+	shift 5
+	[[ $RBUFFER = *${s2}* ]] && [[ $LBUFFER = *${s1}* ]] && {
+		[[ $RBUFFER = *${s2}* ]] && {
+			local -i k
+			opp-s-wrap-scan 1 ${s2} ${s1} "$RBUFFER" +1 0 k
+			(($?==0)) || return -1
+			CURSOR+=k 
+			((CURSOR--))
+			[[ $sp = t ]] && {
+				zle set-mark-command
+				opp-skip-blank-backward
+				zle kill-region
+			}
+			zle set-mark-command
+			CURSOR+=${#s2} 
+			zle kill-region
+			RBUFFER=${t2}$RBUFFER 
+		}
+		[[ $LBUFFER = *${s1}* ]] && {
+			local -i k
+			opp-s-wrap-scan $#LBUFFER ${s1} ${s2} "$LBUFFER" -1 0 k
+			(($?==0)) || return -1
+			CURSOR=k 
+			((CURSOR--))
+			zle set-mark-command
+			CURSOR+=${#s1} 
+			[[ $sp = t ]] && opp-skip-blank-forward
+			zle kill-region
+			LBUFFER=$LBUFFER${t1} 
+		}
+		return 0
+	}
+	(($#@<2)) && return -1
+	opp-s-wrap-maybe "$sp" "$t1" "$t2" "$@"
+	return $?
+}
+opp-skip-blank-forward () {
+	while [[ ${BUFFER[((CURSOR+1))]-} = [[:blank:]] ]]
+	do
+		((CURSOR++))
+	done
+}
+opp-generic-w () {
+	local -a fun1 fun2
+	zparseopts -D 1+:=fun1 2+:=fun2
+	local beg end fun
+	local -a fs
+	fs=(${=fun1}) 
+	for fun in ${fs:#-1}
+	do
+		"$fun"
+	done
+	((beg=$CURSOR))
+	fs=(${=fun2}) 
+	for fun in ${fs:#-2}
+	do
+		"$fun"
+	done
+	((end=$CURSOR))
+	"$@" $beg $end
+}
+opp-surround () {
+	local o="$1"
+	local k="$2"
+	local -a box
+	opp-s-ref $opp_surrounds[$k] box
+	local proc="$box[1]"
+	local arg1="$box[2]"
+	local arg2="$box[3]"
+	local stripp="$box[4]"
+	shift 4 box
+	"$proc" "$o" "$arg1" "$arg2" "$stripp" "$box[@]"
+}
+'opp-regioned-buffer-each~' () {
+	with-opp-regioned opp-regioned-buffer-each "$@"
+}
+opp-s-ref () {
+	local ebody=$1
+	local place=$2
+	local -a reply
+	"$ebody"
+	eval "$place=(${(q)reply[@]})"
+}
+opp-gps-inbetween-2-s-ref () {
+	: ${(P)1:=\`}
+}
+
+opp
