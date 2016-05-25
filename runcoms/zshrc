@@ -17,3 +17,10 @@ export PATH="/apollo/env/SDETools/bin:$PATH:$GOPATH/bin"
 bindkey '^R' history-incremental-search-backward
 
 KEYTIMEOUT=1
+
+alias vim="nvim"
+alias v="vim"
+# allow neovim to change cursor shape in different modes
+export NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+vimgitshow() { git show "$1" | vim - "+set filetype=${1##*.}"; }
