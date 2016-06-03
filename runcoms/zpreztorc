@@ -32,7 +32,6 @@ zstyle ':prezto:load' pmodule \
   'utility' \
   'completion' \
   'history-bunkie' \
-  'opp' \
   'git' \
   'homebrew' \
   'history-substring-search' \
